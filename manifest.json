@@ -1,0 +1,17 @@
+{
+    "short_name": "AcornOS",
+    "name": "Apple AcornOS Prototype",
+    "icons": [
+      {
+        "src": "logo.jpg",
+        "sizes": "192x192 512x512",
+        "type": "image/jpeg"
+      }
+    ],
+    "start_url": "./index.html",
+    "background_color": "#ffffff",
+    "theme_color": "#000000",
+    "display": "standalone",
+    "orientation": "portrait"
+  }
+  
