@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Apple AcornOS Prototype (Project Purple P2)</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #000000;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            background-color: #0d0d0d;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .phone-wrapper {
+            position: relative;
+            width: 360px;
+            height: 680px;
+            background: linear-gradient(145deg, #2c2c2c, #1a1a1a);
+            border-radius: 54px;
+            border: 4px solid #b0b0b0;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9),
+                        inset 0 0 15px rgba(255, 255, 255, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 45px 20px 55px 20px;
+        }
+
+        .earpiece {
+            position: absolute;
+            top: 22px;
+            width: 55px;
+            height: 7px;
+            background: #111;
+            border-radius: 4px;
+            border: 1px solid #444;
+        }
+
+        .home-btn {
+            position: absolute;
+            bottom: 10px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #222 0%, #111 100%);
+            border: 2px solid #444;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .home-btn::after {
+            content: '';
+            width: 13px;
+            height: 13px;
+            border: 2px solid #777;
+            border-radius: 4px;
+        }
+
+        .screen {
+            width: 320px;
+            height: 480px;
+            background-color: #ffffff;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid #000000;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* BOOT SCREEN */
+        .boot-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            cursor: pointer;
+        }
+
+        .boot-screen img {
+            width: 180px;
+            height: auto;
+        }
+
+        /* TOP STATUS BAR */
+        .status-bar-top {
+            height: 40px;
+            width: 100%;
+            background: #ffffff;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 4px 8px;
+            font-size: 13px;
+        }
+
+        .status-left {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.1;
+        }
+
+        .red-dashed-line {
+            color: #ff0000;
+            font-weight: bold;
+            letter-spacing: -0.5px;
+            font-size: 12px;
+        }
+
+        .emergency-label {
+            font-size: 11px;
+            margin-top: 1px;
+        }
+
+        .status-center {
+            font-size: 11px;
+            margin-top: 1px;
+        }
+
+        .status-right {
+            font-size: 16px;
+        }
+
+        /* CONTENT AREA */
+        .app-content {
+            flex: 1;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2px 30px;
+            position: relative;
+        }
+
+        /* VIEWS */
+        .view-screen {
+            display: none;
+            width: 100%;
+            height: 100%;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .view-screen.active-view {
+            display: flex;
+        }
+
+        /* BUTTONS */
+        .btn {
+            width: 100%;
+            background-color: #007bff;
+            color: #000000 !important;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            border-radius: 0px; 
+        }
+
+        .btn:active {
+            opacity: 0.8;
+        }
+
+        .btn-main {
+            height: 75px;
+            font-size: 36px;
+            font-weight: bold;
+            margin: 10px 0;
+            box-shadow: inset 0 0 2px #ffffff;
+        }
+
+        .other-list {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            gap: 1.5px;
+        }
+
+        .btn-sub {
+            height: 24px;
+            font-size: 12px;
+            font-weight: normal;
+            box-shadow: inset 0 0 1px #ffffff;
+        }
+
+        .menu-spacer {
+            height: 4px;
+            width: 100%;
+        }
+
+        .btn-cancel {
+            background-color: #ff3b30 !important;
+            font-size: 14px !important;
+            height: 28px !important;
+            margin-top: 3px !important;
+        }
+
+        /* SMS MENU */
+        .sms-list {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            gap: 6px;
+            padding: 0 10px;
+        }
+
+        .btn-sms-large {
+            height: 38px;
+            font-size: 14px;
+            font-weight: bold;
+            background-color: #007bff;
+            color: #000000;
+            box-shadow: inset 0 0 1px #ffffff;
+        }
+
+        .btn-sms-cancel {
+            height: 42px;
+            font-size: 18px;
+            font-weight: bold;
+            background-color: #ff3b30 !important;
+            color: #000000 !important;
+            margin-top: 10px;
+        }
+
+        /* DIALER SCREEN */
+        .dialer-view-screen {
+            width: 100%;
+            height: 100%;
+            padding: 6px 6px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        .dialer-screen-text {
+            width: 100%;
+            height: 18px;
+            font-size: 14px;
+            font-family: monospace;
+            text-align: center;
+            margin-bottom: 4px;
+            color: #333;
+            letter-spacing: 1px;
+            border-bottom: 1px dashed transparent; 
+        }
+
+        .dialer-grid-container {
+            display: flex;
+            width: 100%;
+            gap: 5px;
+            margin-bottom: 6px;
+        }
+
+        .dialer-col-side {
+            width: 18%;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .dialer-col-center {
+            width: 64%;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 5px;
+        }
+
+        .btn-side {
+            height: 38px;
+            background-color: #007bff;
+            color: #000000;
+            font-size: 18px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-side-spacer {
+            height: 8px;
+            width: 100%;
+        }
+
+        .btn-side-green {
+            height: 38px;
+            background-color: #4cd964 !important;
+            color: #000000;
+            font-size: 15px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
+        }
+
+        .dial-key {
+            height: 38px;
+            background-color: #007bff;
+            color: #000000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: none;
+        }
+
+        .dial-key .letters {
+            font-size: 7px;
+            height: 8px;
+            line-height: 8px;
+            font-weight: normal;
+            color: #000000;
+            margin-bottom: 1px;
+        }
+
+        .dial-key .number {
+            font-size: 14px;
+            line-height: 14px;
+            font-weight: normal;
+            color: #000000;
+        }
+
+        .dial-key-big {
+            height: 38px;
+            background-color: #007bff;
+            color: #000000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            font-weight: normal;
+            cursor: pointer;
+            border: none;
+        }
+
+        .dial-key-symbol {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .dialer-footer-grid {
+            display: flex;
+            width: 100%;
+            gap: 6px;
+            margin-bottom: 4px;
+        }
+
+        .btn-action-dial {
+            flex: 1;
+            height: 48px;
+            background-color: #4cd964 !important;
+            color: #000000 !important;
+            font-size: 24px;
+            font-weight: normal;
+        }
+
+        .btn-action-cancel {
+            flex: 1;
+            height: 48px;
+            background-color: #ff3b30 !important;
+            color: #000000 !important;
+            font-size: 24px;
+            font-weight: normal;
+        }
+
+        /* IN-CALL SCREEN */
+        .incall-box {
+            width: 100%;
+            height: 100%;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #ffffff;
+            text-align: center;
+        }
+
+        .incall-title {
+            font-size: 13px;
+            font-weight: bold;
+            color: #666;
+            letter-spacing: 1px;
+        }
+
+        .incall-number {
+            font-size: 22px;
+            font-weight: bold;
+            margin-top: 5px;
+            font-family: monospace;
+        }
+
+        .incall-timer {
+            font-size: 28px;
+            font-family: monospace;
+            margin: 15px 0;
+            color: #222;
+        }
+
+        .incall-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .btn-incall-action {
+            height: 38px;
+            font-size: 12px;
+            font-weight: bold;
+            background-color: #e0e0e0;
+            color: #000;
+        }
+
+        .btn-incall-action.active {
+            background-color: #007bff;
+            color: #fff !important;
+        }
+
+        .btn-end-call {
+            width: 100%;
+            height: 48px;
+            background-color: #ff3b30 !important;
+            color: #000000 !important;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        /* DIAGNOSTIC SUB-SCREENS */
+        .diag-box {
+            width: 100%;
+            height: 100%;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #ffffff;
+        }
+
+        .diag-title {
+            font-size: 14px;
+            font-weight: bold;
+            border-bottom: 2px solid #000;
+            width: 100%;
+            text-align: center;
+            padding-bottom: 4px;
+            margin-bottom: 8px;
+        }
+
+        .diag-info {
+            width: 100%;
+            font-size: 11px;
+            font-family: monospace;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .diag-row {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px dashed #ccc;
+            padding-bottom: 2px;
+        }
+
+        .music-player-controls {
+            display: flex;
+            width: 100%;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .music-btn {
+            flex: 1;
+            height: 36px;
+            font-size: 13px;
+            font-weight: bold;
+            background-color: #007bff;
+            color: #000;
+        }
+
+        /* BOTTOM STATUS BAR */
+        .status-bar-bottom {
+            height: 20px;
+            width: 100%;
+            text-align: center;
+            font-size: 8px;
+            padding-bottom: 2px;
+            background: #ffffff;
+            border-top: 1px solid #eee;
+        }
+
+        /* GAME STYLES */
+        .game-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        canvas#gameCanvas {
+            background-color: #333;
+            border: 2px solid #000;
+            width: 100%;
+            height: 250px;
+        }
+
+        .game-controls {
+            display: flex;
+            width: 100%;
+            gap: 8px;
+            margin-top: 2px;
+        }
+
+        .game-btn {
+            flex: 1;
+            height: 30px;
+            background-color: #007bff;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        /* SMS MODAL */
+        .sms-popup {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #ffffff;
+            padding: 15px;
+            z-index: 500;
+            flex-direction: column;
+        }
+
+        .sms-popup h3 {
+            font-size: 15px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #000;
+        }
+
+        .sms-popup p {
+            font-size: 13px;
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="phone-wrapper">
+        <div class="earpiece"></div>
+
+        <div class="screen">
+            
+            <!-- BOOT SCREEN (Χρησιμοποιεί το logo.jpg) -->
+            <div id="bootScreen" class="boot-screen" onclick="dismissBoot()">
+                <img src="logo.jpg" alt="AcornOS Logo">
+            </div>
+
+            <!-- STATUS BAR TOP -->
+            <div class="status-bar-top">
+                <div class="status-left">
+                    <span class="red-dashed-line">------</span>
+                    <span class="emergency-label">Emergency Only</span>
+                </div>
+                <div class="status-center">
+                    No voicemail
+                </div>
+                <div class="status-right" id="clockDisplay">
+                    4:00
+                </div>
+            </div>
+
+            <!-- CONTENT AREA -->
+            <div class="app-content">
+
+                <!-- 1. MAIN MENU SCREEN -->
+                <div id="mainView" class="view-screen active-view">
+                    <button class="btn btn-main" onclick="openView('callView')">Call</button>
+                    <button class="btn btn-main" onclick="openView('smsView')">SMS</button>
+                    <button class="btn btn-main" onclick="openView('otherView')">Other</button>
+                </div>
+
+                <!-- 2. OTHER MENU SCREEN -->
+                <div id="otherView" class="view-screen">
+                    <div class="other-list">
+                        <button class="btn btn-sub" onclick="openView('messagesDiagView')">Messages</button>
+                        <button class="btn btn-sub" onclick="openView('networkDiagView')">Network</button>
+                        <button class="btn btn-sub" onclick="triggerDiag('Preferences')">Preferences</button>
+                        
+                        <div class="menu-spacer"></div>
+                        
+                        <button class="btn btn-sub" onclick="openView('musicDiagView')">Music</button>
+                        
+                        <div class="menu-spacer"></div>
+                        
+                        <button class="btn btn-sub" onclick="startGame()">Game (Robber Chase)</button>
+                        
+                        <div class="menu-spacer"></div>
+                        
+                        <button class="btn btn-sub" onclick="triggerDiag('Field Test Mode')">Field Test</button>
+                        <button class="btn btn-sub" onclick="triggerDiag('Factory Test Mode')">Factory Test</button>
+                        
+                        <div class="menu-spacer"></div>
+                        
+                        <button class="btn btn-sub" onclick="triggerDiag('Unlock PIN (3)')">Unlock PIN (3)</button>
+                        
+                        <div class="menu-spacer"></div>
+                        
+                        <button class="btn btn-sub" onclick="triggerDiag('Modem Resetting...')">Modem Reset</button>
+                        <button class="btn btn-sub btn-cancel" onclick="openView('mainView')">Cancel</button>
+                    </div>
+                </div>
+
+                <!-- 3. SMS MENU SCREEN -->
+                <div id="smsView" class="view-screen">
+                    <div class="sms-list">
+                        <button class="btn btn-sms-large" onclick="readSMS('SMS Test Message #1', 'Acorn OS internal build ready.')">SMS Test Message #1</button>
+                        <button class="btn btn-sms-large" onclick="readSMS('SMS Test Message #2', 'Project Purple P2 test sequence.')">SMS Test Message #2</button>
+                        <button class="btn btn-sms-large" onclick="readSMS('SMS Test Message #3', 'Click-wheel navigation prototype.')">SMS Test Message #3</button>
+                        <button class="btn btn-sms-large" onclick="readSMS('SMS Test Message #4', 'Baseband status: Connected')">SMS Test Message #4</button>
+                        <button class="btn btn-sms-large" onclick="readSMS('SMS Test Message #5', 'Battery level reporting 0%.')">SMS Test Message #5</button>
+                        <button class="btn btn-sms-cancel" onclick="openView('mainView')">Cancel</button>
+                    </div>
+                </div>
+
+                <!-- 4. DIALER SCREEN -->
+                <div id="callView" class="view-screen">
+                    <div class="dialer-view-screen">
+                        
+                        <div class="dialer-screen-text" id="dialerText"></div>
+                        
+                        <div class="dialer-grid-container">
+                            <!-- Left Column: T, V, HD -->
+                            <div class="dialer-col-side">
+                                <button class="btn btn-side" onclick="playBeep(410)">T</button>
+                                <div class="btn-side-spacer"></div>
+                                <button class="btn btn-side" onclick="playBeep(460)">V</button>
+                                <div class="btn-side-spacer"></div>
+                                <button class="btn btn-side btn-side-green" onclick="playBeep(510)">HD</button>
+                            </div>
+
+                            <!-- Center Keypad -->
+                            <div class="dialer-col-center">
+                                <button class="btn dial-key-big" onclick="digitPress('1')">1</button>
+                                <button class="btn dial-key" onclick="digitPress('2')">
+                                    <span class="letters">ABC</span>
+                                    <span class="number">2</span>
+                                </button>
+                                <button class="btn dial-key" onclick="digitPress('3')">
+                                    <span class="letters">DEF</span>
+                                    <span class="number">3</span>
+                                </button>
+
+                                <button class="btn dial-key" onclick="digitPress('4')">
+                                    <span class="letters">GHI</span>
+                                    <span class="number">4</span>
+                                </button>
+                                <button class="btn dial-key" onclick="digitPress('5')">
+                                    <span class="letters">JKL</span>
+                                    <span class="number">5</span>
+                                </button>
+                                <button class="btn dial-key" onclick="digitPress('6')">
+                                    <span class="letters">MNO</span>
+                                    <span class="number">6</span>
+                                </button>
+
+                                <button class="btn dial-key" onclick="digitPress('7')">
+                                    <span class="letters">PQRS</span>
+                                    <span class="number">7</span>
+                                </button>
+                                <button class="btn dial-key" onclick="digitPress('8')">
+                                    <span class="letters">TUV</span>
+                                    <span class="number">8</span>
+                                </button>
+                                <button class="btn dial-key" onclick="digitPress('9')">
+                                    <span class="letters">WXYZ</span>
+                                    <span class="number">9</span>
+                                </button>
+
+                                <button class="btn dial-key dial-key-symbol" onclick="digitPress('*')">*</button>
+                                <button class="btn dial-key-big" onclick="digitPress('0')">0</button>
+                                <button class="btn dial-key dial-key-symbol" onclick="digitPress('#')">#</button>
+                            </div>
+
+                            <!-- Right Column: D, C, SP -->
+                            <div class="dialer-col-side">
+                                <button class="btn btn-side" onclick="playBeep(560)">D</button>
+                                <div class="btn-side-spacer"></div>
+                                <button class="btn btn-side" onclick="clearDigits()">C</button>
+                                <div class="btn-side-spacer"></div>
+                                <button class="btn btn-side btn-side-green" onclick="playBeep(610)">SP</button>
+                            </div>
+                        </div>
+
+                        <!-- Bottom Action Buttons: Dial / Cancel -->
+                        <div class="dialer-footer-grid">
+                            <button class="btn btn-action-dial" onclick="startCall()">Dial</button>
+                            <button class="btn btn-action-cancel" onclick="openView('mainView')">Cancel</button>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- 5. IN-CALL SCREEN -->
+                <div id="inCallView" class="view-screen">
+                    <div class="incall-box">
+                        <div>
+                            <div class="incall-title">CALL IN PROGRESS</div>
+                            <div class="incall-number" id="inCallNumberDisplay">000</div>
+                            <div class="incall-timer" id="callTimer">00:00</div>
+                        </div>
+                        <div style="width: 100%;">
+                            <div class="incall-grid">
+                                <button class="btn btn-incall-action" id="muteBtn" onclick="toggleMute()">Mute</button>
+                                <button class="btn btn-incall-action" id="speakerBtn" onclick="toggleSpeaker()">Speaker</button>
+                            </div>
+                            <button class="btn btn-end-call" onclick="endCall()">End Call</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 6. MESSAGES DIAGNOSTIC SCREEN -->
+                <div id="messagesDiagView" class="view-screen">
+                    <div class="diag-box">
+                        <div class="diag-title">MESSAGES DIAGNOSTICS</div>
+                        <div class="diag-info">
+                            <div class="diag-row"><span>SMS Service:</span><span>ONLINE</span></div>
+                            <div class="diag-row"><span>Stored Msgs:</span><span>5 / 50</span></div>
+                            <div class="diag-row"><span>SIM Storage:</span><span>READY</span></div>
+                            <div class="diag-row"><span>SMSC Center:</span><span>+18005550199</span></div>
+                            <div class="diag-row"><span>DB Status:</span><span>OK (AcornDB)</span></div>
+                        </div>
+                        <button class="btn btn-cancel" onclick="openView('otherView')">Back</button>
+                    </div>
+                </div>
+
+                <!-- 7. NETWORK DIAGNOSTIC SCREEN -->
+                <div id="networkDiagView" class="view-screen">
+                    <div class="diag-box">
+                        <div class="diag-title">NETWORK DIAGNOSTICS</div>
+                        <div class="diag-info">
+                            <div class="diag-row"><span>Baseband FW:</span><span>01.00.04-P2</span></div>
+                            <div class="diag-row"><span>Signal RSSI:</span><span>-72 dBm</span></div>
+                            <div class="diag-row"><span>Network State:</span><span>SEARCHING</span></div>
+                            <div class="diag-row"><span>GPRS/EDGE:</span><span>DISABLED</span></div>
+                            <div class="diag-row"><span>SIM Lock:</span><span>UNLOCKED</span></div>
+                        </div>
+                        <button class="btn btn-cancel" onclick="openView('otherView')">Back</button>
+                    </div>
+                </div>
+
+                <!-- 8. MUSIC DIAGNOSTIC / PLAYER SCREEN -->
+                <div id="musicDiagView" class="view-screen">
+                    <div class="diag-box">
+                        <div class="diag-title">MUSIC PLAYER DIAGNOSTIC</div>
+                        <div class="diag-info">
+                            <div class="diag-row"><span>Audio Codec:</span><span>AAC / MP3</span></div>
+                            <div class="diag-row"><span>File:</span><span>music.mp3</span></div>
+                            <div class="diag-row"><span>Status:</span><span id="musicStatus">Stopped</span></div>
+                        </div>
+                        
+                        <audio id="acornAudio" src="music.mp3" preload="auto"></audio>
+
+                        <div class="music-player-controls">
+                            <button class="btn music-btn" onclick="playMusic()">▶ Play</button>
+                            <button class="btn music-btn" onclick="pauseMusic()">❚❚ Pause</button>
+                            <button class="btn music-btn" onclick="stopMusic()">◼ Stop</button>
+                        </div>
+                        
+                        <button class="btn btn-cancel" onclick="stopMusic(); openView('otherView');">Back</button>
+                    </div>
+                </div>
+
+                <!-- 9. GAME SCREEN -->
+                <div id="gameView" class="view-screen">
+                    <div class="game-container">
+                        <canvas id="gameCanvas" width="280" height="240"></canvas>
+                        <div class="game-controls">
+                            <button class="btn game-btn" onclick="movePlayer(-1)">◀ Left</button>
+                            <button class="btn game-btn" onclick="movePlayer(1)">Right ▶</button>
+                        </div>
+                        <button class="btn btn-cancel" onclick="stopGame(); openView('otherView');">Exit Game</button>
+                    </div>
+                </div>
+
+                <!-- SMS POPUP -->
+                <div id="smsModal" class="sms-popup">
+                    <h3 id="smsModalTitle"></h3>
+                    <p id="smsModalContent"></p>
+                    <button class="btn btn-cancel" onclick="closeSMS()">Back</button>
+                </div>
+
+            </div>
+
+            <!-- STATUS BAR BOTTOM -->
+            <div class="status-bar-bottom">
+                Wow isn't this ugly - Battery level (0)
+            </div>
+        </div>
+
+        <!-- Φυσικό Home Κουμπί -->
+        <div class="home-btn" onclick="restartAcornOS()" title="Reboot AcornOS"></div>
+    </div>
+
+    <script>
+        let bootTimer = null;
+
+        window.addEventListener('DOMContentLoaded', function() {
+            startBootSequence();
+            updateTime();
+            setInterval(updateTime, 30000);
+        });
+
+        function startBootSequence() {
+            const bootScr = document.getElementById('bootScreen');
+            bootScr.style.display = 'flex';
+            
+            clearTimeout(bootTimer);
+            bootTimer = setTimeout(function() {
+                bootScr.style.display = 'none';
+            }, 5000);
+        }
+
+        function dismissBoot() {
+            clearTimeout(bootTimer);
+            document.getElementById('bootScreen').style.display = 'none';
+        }
+
+        function restartAcornOS() {
+            stopGame();
+            stopMusic();
+            endCall();
+            openView('mainView');
+            startBootSequence();
+        }
+
+        function openView(viewId) {
+            const screens = document.querySelectorAll('.view-screen');
+            screens.forEach(s => s.classList.remove('active-view'));
+            document.getElementById(viewId).classList.add('active-view');
+        }
+
+        function updateTime() {
+            const now = new Date();
+            let hrs = now.getHours();
+            let mins = now.getMinutes();
+            if (mins < 10) mins = '0' + mins;
+            document.getElementById('clockDisplay').innerText = hrs + ':' + mins;
+        }
+
+        function triggerDiag(name) {
+            alert('AcornOS Diagnostic: ' + name);
+        }
+
+        /* MUSIC PLAYER LOGIC */
+        function playMusic() {
+            const audio = document.getElementById('acornAudio');
+            audio.play().then(() => {
+                document.getElementById('musicStatus').innerText = 'Playing...';
+            }).catch(e => {
+                alert('Παρακαλώ βεβαιώσου ότι το αρχείο music.mp3 βρίσκεται στον ίδιο φάκελο!');
+            });
+        }
+
+        function pauseMusic() {
+            const audio = document.getElementById('acornAudio');
+            audio.pause();
+            document.getElementById('musicStatus').innerText = 'Paused';
+        }
+
+        function stopMusic() {
+            const audio = document.getElementById('acornAudio');
+            audio.pause();
+            audio.currentTime = 0;
+            document.getElementById('musicStatus').innerText = 'Stopped';
+        }
+
+        /* DIALER & IN-CALL LOGIC */
+        let numberBuffer = '';
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        let audioCtx;
+        let callTimerInterval = null;
+        let callSeconds = 0;
+        let isMuted = false;
+        let isSpeaker = false;
+
+        function playBeep(frequency) {
+            if (!audioCtx) audioCtx = new AudioContext();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(frequency, audioCtx.currentTime);
+            gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.12);
+        }
+
+        function digitPress(digit) {
+            playBeep(750);
+            numberBuffer += digit;
+            document.getElementById('dialerText').innerText = numberBuffer;
+        }
+
+        function clearDigits() {
+            numberBuffer = '';
+            document.getElementById('dialerText').innerText = '';
+        }
+
+        function startCall() {
+            if (numberBuffer.length > 0) {
+                document.getElementById('inCallNumberDisplay').innerText = numberBuffer;
+                openView('inCallView');
+                
+                // Start call timer
+                callSeconds = 0;
+                document.getElementById('callTimer').innerText = '00:00';
+                clearInterval(callTimerInterval);
+                callTimerInterval = setInterval(() => {
+                    callSeconds++;
+                    let mins = Math.floor(callSeconds / 60);
+                    let secs = callSeconds % 60;
+                    let mStr = mins < 10 ? '0' + mins : mins;
+                    let sStr = secs < 10 ? '0' + secs : secs;
+                    document.getElementById('callTimer').innerText = mStr + ':' + sStr;
+                }, 1000);
+            } else {
+                alert('No number entered.');
+            }
+        }
+
+        function endCall() {
+            clearInterval(callTimerInterval);
+            isMuted = false;
+            isSpeaker = false;
+            document.getElementById('muteBtn').classList.remove('active');
+            document.getElementById('speakerBtn').classList.remove('active');
+            openView('callView');
+        }
+
+        function toggleMute() {
+            isMuted = !isMuted;
+            const btn = document.getElementById('muteBtn');
+            if (isMuted) btn.classList.add('active');
+            else btn.classList.remove('active');
+        }
+
+        function toggleSpeaker() {
+            isSpeaker = !isSpeaker;
+            const btn = document.getElementById('speakerBtn');
+            if (isSpeaker) btn.classList.add('active');
+            else btn.classList.remove('active');
+        }
+
+        function readSMS(title, content) {
+            document.getElementById('smsModalTitle').innerText = title;
+            document.getElementById('smsModalContent').innerText = content;
+            document.getElementById('smsModal').style.display = 'flex';
+        }
+
+        function closeSMS() {
+            document.getElementById('smsModal').style.display = 'none';
+        }
+
+        /* ROBBER CHASE GAME LOGIC */
+        let canvas, ctx;
+        let gameInterval;
+        let playerLane = 1;
+        let score = 0;
+        let obstacles = [];
+        let policeSiren = false;
+
+        function startGame() {
+            openView('gameView');
+            canvas = document.getElementById('gameCanvas');
+            ctx = canvas.getContext('2d');
+            playerLane = 1;
+            score = 0;
+            obstacles = [];
+            
+            clearInterval(gameInterval);
+            gameInterval = setInterval(updateGame, 50);
+        }
+
+        function stopGame() {
+            clearInterval(gameInterval);
+        }
+
+        function movePlayer(dir) {
+            playerLane += dir;
+            if (playerLane < 0) playerLane = 0;
+            if (playerLane > 2) playerLane = 2;
+        }
+
+        window.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') movePlayer(-1);
+            if (e.key === 'ArrowRight') movePlayer(1);
+        });
+
+        function updateGame() {
+            score += 1;
+            policeSiren = Math.floor(score / 10) % 2 === 0;
+
+            if (Math.random() < 0.03) {
+                obstacles.push({
+                    lane: Math.floor(Math.random() * 3),
+                    y: -30
+                });
+            }
+
+            for (let i = 0; i < obstacles.length; i++) {
+                obstacles[i].y += 5;
+            }
+
+            for (let i = 0; i < obstacles.length; i++) {
+                if (obstacles[i].y > 130 && obstacles[i].y < 180 && obstacles[i].lane === playerLane) {
+                    stopGame();
+                    alert('CRASH! The police caught you!\nFinal Score: ' + score);
+                    openView('otherView');
+                    return;
+                }
+            }
+
+            obstacles = obstacles.filter(o => o.y < 230);
+
+            ctx.fillStyle = '#444';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.strokeStyle = '#fff';
+            ctx.setLineDash([10, 10]);
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(90, 0); ctx.lineTo(90, 220);
+            ctx.moveTo(180, 0); ctx.lineTo(180, 220);
+            ctx.stroke();
+
+            let playerX = playerLane * 90 + 28;
+            ctx.fillStyle = '#ff3b30';
+            ctx.fillRect(playerX, 150, 34, 45);
+            ctx.fillStyle = '#000';
+            ctx.fillRect(playerX + 4, 155, 26, 10);
+
+            let policeX = playerX;
+            ctx.fillStyle = '#007bff';
+            ctx.fillRect(policeX, 180, 34, 25);
+            ctx.fillStyle = policeSiren ? '#ff0000' : '#00ffff';
+            ctx.fillRect(policeX + 10, 178, 14, 4);
+
+            for (let i = 0; i < obstacles.length; i++) {
+                let obsX = obstacles[i].lane * 90 + 28;
+                ctx.fillStyle = '#ffcc00';
+                ctx.fillRect(obsX, obstacles[i].y, 34, 24);
+                ctx.fillStyle = '#000';
+                ctx.fillRect(obsX + 8, obstacles[i].y + 4, 18, 14);
+            }
+
+            ctx.fillStyle = '#fff';
+            ctx.font = '12px Arial';
+            ctx.fillText('SCORE: ' + score, 10, 20);
+        }
+    </script>
+</body>
+</html>
