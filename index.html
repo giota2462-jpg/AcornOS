@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Apple AcornOS Prototype (Project Purple P2)</title>
+    
+    <!-- Σύνδεση Manifest για να ξεκλειδώσει η κανονική Εγκατάσταση Εφαρμογής -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#000000">
+    <link rel="apple-touch-icon" href="logo.jpg">
+
     <style>
         * {
             box-sizing: border-box;
@@ -590,7 +596,7 @@
 
         <div class="screen">
             
-            <!-- BOOT SCREEN (Χρησιμοποιεί το logo.jpg) -->
+            <!-- BOOT SCREEN -->
             <div id="bootScreen" class="boot-screen" onclick="dismissBoot()">
                 <img src="logo.jpg" alt="AcornOS Logo">
             </div>
@@ -669,7 +675,6 @@
                         <div class="dialer-screen-text" id="dialerText"></div>
                         
                         <div class="dialer-grid-container">
-                            <!-- Left Column: T, V, HD -->
                             <div class="dialer-col-side">
                                 <button class="btn btn-side" onclick="playBeep(410)">T</button>
                                 <div class="btn-side-spacer"></div>
@@ -678,7 +683,6 @@
                                 <button class="btn btn-side btn-side-green" onclick="playBeep(510)">HD</button>
                             </div>
 
-                            <!-- Center Keypad -->
                             <div class="dialer-col-center">
                                 <button class="btn dial-key-big" onclick="digitPress('1')">1</button>
                                 <button class="btn dial-key" onclick="digitPress('2')">
@@ -721,7 +725,6 @@
                                 <button class="btn dial-key dial-key-symbol" onclick="digitPress('#')">#</button>
                             </div>
 
-                            <!-- Right Column: D, C, SP -->
                             <div class="dialer-col-side">
                                 <button class="btn btn-side" onclick="playBeep(560)">D</button>
                                 <div class="btn-side-spacer"></div>
@@ -731,7 +734,6 @@
                             </div>
                         </div>
 
-                        <!-- Bottom Action Buttons: Dial / Cancel -->
                         <div class="dialer-footer-grid">
                             <button class="btn btn-action-dial" onclick="startCall()">Dial</button>
                             <button class="btn btn-action-cancel" onclick="openView('mainView')">Cancel</button>
@@ -837,7 +839,6 @@
             </div>
         </div>
 
-        <!-- Φυσικό Home Κουμπί -->
         <div class="home-btn" onclick="restartAcornOS()" title="Reboot AcornOS"></div>
     </div>
 
@@ -954,7 +955,6 @@
                 document.getElementById('inCallNumberDisplay').innerText = numberBuffer;
                 openView('inCallView');
                 
-                // Start call timer
                 callSeconds = 0;
                 document.getElementById('callTimer').innerText = '00:00';
                 clearInterval(callTimerInterval);
